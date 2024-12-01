@@ -1,0 +1,120 @@
+1)Build Command for application -
+
+./gradlew clean build
+
+2)Start Command for application -
+java -Xms512m -Xmx2g -Djava.locale.providers=COMPAT,CLDR -Djboss.server.home.dir="/home/asite/Documents/tasktracker" -jar tasktracker-web/build/libs/tasktracker-web.war --spring.config.location=resources/application.properties
+
+2)Start Command for application debug -
+/home/asite/Desktop/Bhavik/Sboot_project/jdk-21.0.1/bin/java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=7000,suspend=n -Djava.locale.providers=COMPAT,CLDR -Djboss.server.home.dir="/home/asite/Documents/tasktracker" -jar tasktracker-web/build/libs/tasktracker-web.war --spring.config.location=resources/application.properties
+${JAVA_HOME}/bin/java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=7000,suspend=n -Djava.locale.providers=COMPAT -Djboss.server.home.dir="/home/asite/Documents/tasktracker" -jar tasktracker-web/build/libs/tasktracker-web.war --spring.config.location=resources/application.properties
+${JAVA_HOME}/bin/java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=7001,suspend=n -Djava.locale.providers=COMPAT -Djboss.server.home.dir="/home/asite/Documents/tasktrackerV2" -jar tasktracker-web/build/libs/tasktracker-web.war --spring.config.location=resources/application.properties
+
+3)NgRok -
+ngrok http 8090
+
+4)Content Security Policy Rules
+
+4.1)script-src 'self' https://trustedscripts.example.com - This directive specifies that scripts can only be loaded from the same origin ('self') and from the domain https://trustedscripts.example.com.
+
+4.2)object-src https://trustedplugins.example.com - This directive specifies that objects (such as <object>, <embed>, and <applet> elements) can only be loaded from the domain https://trustedplugins.example.com.
+
+https://stackoverflow.com/questions/29200693/restrict-javascript-execution-via-http-header
+
+5)X-XSS-Protection:1 Header -
+
+Instructs browsers to protect from XSS
+
+6)JWT Token Authentication -
+
+Steps: -
+
+6.1)Sign Tokens - When user logs in and signs up
+6.2)Check in Filter - If user has token and is not expired, get details and store in Context Holder which means user authenticated
+(WIll help in Role Based Access Control in future)
+6.3)Check for deviceID - Get device ID from UI if empty validation fails, during login store in table, during other api calls
+check if present and matches users list of devices.
+
+Table Name - tasktracker_service.device_ms_tbl
+
+Table Structure -
+------------------------------
+ID | Device_ID | user_id
+------------------------------
+
+
+6.4)
+
+7)Types of tables -
+
+Master - The tables that hold the records containing general information about the participants or objects of transactions within a module
+Transaction - Tables in which insertion and update operations are frequent
+Link - Tables which are used to join tables
+Lookup - Tables which are used looking up some data for reference
+
+8)Date Format -
+
+yyyy-MM-dd HH:mm:ss.SSSSSSZ (2024-02-01 12:30:00.000000+05:30)
+
+
+9)Caching -
+
+Scope of Caching :
+
+1)Forgot Password - We will store <email:OTP>
+
+2)User profile data - We will store <email:UserObject>, Need to updated with user details update feature
+
+3)Single task (Though lot of changes can occur, need to plan when to remove data from cache???????) -
+
+4)Device data - We will store <deviceName:DeviceObject>
+
+We will store
+
+Cache Providers :
+
+1)Redis is an in-memory database, stores data in ram not in storage.
+https://github.com/bezkoder/spring-boot-redis-example/tree/master/src/main/java/com/bezkoder/spring/redis
+https://stackoverflow.com/questions/34201135/spring-redis-read-configuration-from-application-properties-file
+https://stackoverflow.com/questions/77329122/do-i-need-jedis-to-use-redis-cache-in-spring-boot
+https://stackoverflow.com/questions/64489012/when-using-spring-boot-starter-data-redis-how-to-set-the-eviction-policy-lfu-o
+
+2)Couchbase supports in memory, also persistence when server restarted and offers querying.
+
+3)NginX
+
+Cache Eviction Sliding window - A sliding window policy maintains a queue of a specified size, into which entities flow. When the queue is full and a new entity arrives, the oldest entity in the queue is removed from the window (FIFO).
+
+Other -
+
+Least Recently Used (LRU)
+Least Frequently Used (LFU)
+Time To Live (TTL)
+
+: Cache sharing for multi-instance -
+
+10)Multi Instances -
+
+11)Sending mails -
+
+https://github.com/AdityaKshettri/Sending-Emails-using-Spring-Boot-Mail/blob/master/src/main/java/com/aditya/emailservice/service/MailServiceImpl.java
+
+12)Two-factor authentication -
+
+Currently, using DeviceId(Same device or another) and Token(Expiry and format) we validate users.
+
+During Sign Up -> Store OTP in cache and send in mail.
+
+During Login when logging in with new Device -> Store OTP in cache and send in mail.
+
+13)Couchbase setup and configuration code -
+
+https://docs.couchbase.com/java-sdk/current/hello-world/start-using-sdk.html
+
+14)Swagger -
+
+http://127.0.0.1:8090/tasktracker/swagger-ui/index.html
+
+15)Resource/Database Sharing Design between Micro services (MicroServices Design)
+
+https://softwareengineering.stackexchange.com/questions/436103/can-cache-be-shared-among-services-via-redis-hazelcast

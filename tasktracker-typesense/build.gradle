@@ -1,0 +1,5 @@
+
+dependencies {
+    api 'org.typesense:typesense-java:0.8.1'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+}

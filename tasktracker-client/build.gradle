@@ -1,0 +1,5 @@
+dependencies {
+    api('org.springframework.cloud:spring-cloud-starter-openfeign')
+    api 'org.springframework.boot:spring-boot-starter-web'
+//  implementation('org.springframework.cloud:spring-cloud-dependencies:2022.0.4')
+}

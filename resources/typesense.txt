@@ -1,0 +1,18 @@
+###################################################################################
+1)TypeSense Server Setup:
+
+1.2) Linux Server setup:
+https://typesense.org/docs/guide/install-typesense.html#linux-binary
+
+./typesense-server --data-dir = /home/asite/Documents/typesense-data --api-key = xyz --api-port = 9090 --log-dir = /home/asite/Documents/typesense-data
+./typesense-server --data-dir=/home/asite/Documents/typesense-data --api-key=xyz ----peering-port=9090
+./typesense-server --config=/home/asite/Documents/tasktracker/resources/typesense-server.ini
+
+1.2) Server Configuration:
+https://typesense.org/docs/26.0/api/server-configuration.html#using-a-configuration-file
+
+2)TypeSense Client Setup:
+
+1)implementation 'org.typesense:typesense-java:0.5.0'
+
+2)TypesenseConfig file holds setup and connection code.

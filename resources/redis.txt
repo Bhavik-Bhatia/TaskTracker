@@ -1,0 +1,27 @@
+1)Setup Redis Server
+
+1.1)Make a conf file with cluster configuration
+
+port 7000
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+
+1.2)Start redis server -
+
+redis-server ./redis-01.conf
+
+https://stackoverflow.com/questions/75182048/redis-cluster-setup-on-ubuntu-20-04
+
+1.3)Make cluster -
+
+redis-cli --cluster create 127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 --cluster-replicas 0
+
+1.4)sudo service redis-server stop
+
+1.5)Reset clusters
+
+redis-cli -p <port>
+
+>> flushall
+>> cluster reset
