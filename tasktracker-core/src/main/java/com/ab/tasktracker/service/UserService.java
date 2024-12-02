@@ -50,9 +50,6 @@ public class UserService {
     private UserHelper userHelper;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
     private CacheService cacheService;
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
