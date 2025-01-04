@@ -1,10 +1,10 @@
 package com.ab.tasktracker.security.filter;
 
+import com.ab.jwt.JwtUtil;
 import com.ab.tasktracker.constants.TaskTrackerConstants;
 import com.ab.tasktracker.entity.Device;
 import com.ab.tasktracker.helper.UserHelper;
 import com.ab.tasktracker.repository.DeviceRepository;
-import com.ab.tasktracker.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

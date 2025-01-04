@@ -1,5 +1,6 @@
 package com.ab.tasktracker.util;
 
+import com.ab.jwt.JwtUtil;
 import io.jsonwebtoken.MalformedJwtException;
 import org.junit.Assert;
 import org.junit.Test;
