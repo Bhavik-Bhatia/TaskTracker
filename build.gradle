@@ -5,8 +5,8 @@ plugins {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
-    group = 'com.ab'
-    version = '0.0.1-SNAPSHOT'
+    group = 'com.ab.tasktracker'
+    version = '1.0'
 
 
     sourceCompatibility = 21

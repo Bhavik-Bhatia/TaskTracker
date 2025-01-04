@@ -1,5 +1,7 @@
 package com.ab.tasktracker.service;
 
+import com.ab.jwt.JwtUtil;
+import com.ab.tasktracker.client.EmailClient;
 import com.ab.tasktracker.constants.TaskTrackerConstants;
 import com.ab.tasktracker.dto.LoginUserDTO;
 import com.ab.tasktracker.dto.UserDTO;
@@ -10,7 +12,6 @@ import com.ab.tasktracker.exception.InvalidPasswordException;
 import com.ab.tasktracker.exception.UserNotExistsException;
 import com.ab.tasktracker.helper.UserHelper;
 import com.ab.tasktracker.repository.UserRepository;
-import com.ab.tasktracker.util.JwtUtil;
 import com.ab.tasktracker.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
@@ -50,10 +51,10 @@ public class UserService {
     private UserHelper userHelper;
 
     @Autowired
-    private EmailService emailService;
+    private CacheService cacheService;
 
     @Autowired
-    private CacheService cacheService;
+    private EmailClient emailClient;
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -91,7 +92,7 @@ public class UserService {
 //          Send mail to user for validating
             Map<String, String> prepareSendMailMap = userHelper.prepareSendMailMap(email, MailType.VALIDATE_SIGNUP_MAIL);
             prepareSendMailMap.put("text", String.format("Hi please use this OTP %s to sign up", otp));
-            emailService.sendMail(prepareSendMailMap);
+            emailClient.sendEmail(prepareSendMailMap);
         }
 //      Store OTP in cache
         Boolean result = userHelper.insertTwoFactorAuthOTP(otp, email);
@@ -202,7 +203,7 @@ public class UserService {
 //              Send mail as user logged in with new device
                 Map<String, String> prepareSendMailMap = userHelper.prepareSendMailMap(userDTO.getEmail(), MailType.NEW_DEVICE_LOGIN_MAIL);
                 prepareSendMailMap.put("text", "Hi " + userDTO.getUserName() + " your account was logged in with new device " + deviceId);
-                emailService.sendMail(prepareSendMailMap);
+                emailClient.sendEmail(prepareSendMailMap);
                 Device deviceEntity = ModelMapperUtil.getDeviceEntityFromUserEntity(userEntity, deviceId);
                 userHelper.insertDeviceDetails(deviceEntity);
             }
@@ -283,8 +284,8 @@ public class UserService {
                 LOGGER.debug("OTP generated");
 //              Send mail to user
                 Map<String, String> prepareSendMailMap = userHelper.prepareSendMailMap(email, MailType.FORGOT_PASSWORD_MAIL);
-                prepareSendMailMap.put("otp", otp);
-                emailService.sendMail(prepareSendMailMap);
+                prepareSendMailMap.put("text", "Your OTP is " + otp);
+                emailClient.sendEmail(prepareSendMailMap);
             }
 //          Store in cache
             Map<String, Object> map = new HashMap<>();

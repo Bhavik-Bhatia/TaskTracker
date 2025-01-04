@@ -76,7 +76,6 @@ public class UserHelper {
      */
     public Map<String, String> prepareSendMailMap(String mailTo, MailType mailType) {
         Map<String, String> map = new HashMap<>();
-        map.put("mailFrom", environment.getProperty("spring.mail.username"));
         map.put("isMultipart", "false");
         map.put("mailTo", mailTo);
         switch (mailType) {

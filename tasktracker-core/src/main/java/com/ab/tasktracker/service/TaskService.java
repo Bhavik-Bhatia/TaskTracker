@@ -1,6 +1,6 @@
 package com.ab.tasktracker.service;
 
-import com.ab.tasktracker.client.MLClient;
+import com.ab.tasktracker.client.EmailClient;
 import com.ab.tasktracker.client.RestTemplateClient;
 import com.ab.tasktracker.constants.TaskTrackerConstants;
 import com.ab.tasktracker.dto.TaskDTO;
@@ -10,9 +10,6 @@ import com.ab.tasktracker.helper.TaskHelper;
 import com.ab.tasktracker.helper.UserHelper;
 import com.ab.tasktracker.repository.TaskRepository;
 import com.ab.tasktracker.util.ModelMapperUtil;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -35,7 +32,7 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
-    private MLClient mlClient;
+    private EmailClient emailClient;
     @Autowired
     private CacheService cacheService;
     @Autowired

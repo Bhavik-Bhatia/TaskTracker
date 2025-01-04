@@ -1,5 +1,6 @@
 package com.ab.tasktracker.service;
 
+import com.ab.jwt.JwtUtil;
 import com.ab.tasktracker.constants.TaskTrackerConstants;
 import com.ab.tasktracker.dto.LoginUserDTO;
 import com.ab.tasktracker.dto.UserDTO;
@@ -9,7 +10,6 @@ import com.ab.tasktracker.exception.InvalidPasswordException;
 import com.ab.tasktracker.exception.UserNotExistsException;
 import com.ab.tasktracker.repository.DeviceRepository;
 import com.ab.tasktracker.repository.UserRepository;
-import com.ab.tasktracker.util.JwtUtil;
 import jakarta.validation.ConstraintViolationException;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
