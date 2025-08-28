@@ -8,4 +8,5 @@ dependencies {
     api 'io.jsonwebtoken:jjwt-jackson:0.12.3'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     api files('src/lib/thirdPartyJars/Jwt-Util-1.0-fat.jar')
+    api files('src/lib/thirdPartyJars/cache-service-1.0-fat.jar')
 }

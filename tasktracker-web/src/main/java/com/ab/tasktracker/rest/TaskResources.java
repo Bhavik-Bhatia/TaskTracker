@@ -6,9 +6,9 @@ import com.ab.tasktracker.service.TaskService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +20,10 @@ import java.util.Map;
 @RestController
 @RequestMapping(TaskTrackerURI.TASK_URI)
 @CrossOrigin("*")
+@AllArgsConstructor
 public class TaskResources {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskResources.class);
 
-    @Autowired
     private TaskService taskService;
 
     /**

@@ -118,3 +118,23 @@ http://127.0.0.1:8090/tasktracker/swagger-ui/index.html
 15)Resource/Database Sharing Design between Micro services (MicroServices Design)
 
 https://softwareengineering.stackexchange.com/questions/436103/can-cache-be-shared-among-services-via-redis-hazelcast
+
+16)Docker related commands for this app -
+
+#Build
+sudo docker build -t tasktracker:1.0 .
+
+#run
+sudo docker run --network=host -p 8090:8090 -p 7002:7002 -e JWT_SECRET_KEY=$JWT_SERVICE_KEY -e POSTGRES_USERNAME=$POSTGRES_USERNAME -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD  tasktracker:1.0
+
+#List of images
+sudo docker images
+
+#List of running containers
+sudo docker ps
+
+#Stop a container
+sudo docker stop <Container-ID>
+
+#Delete an image
+sudo docker rmi <Image-ID>

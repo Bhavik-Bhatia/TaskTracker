@@ -21,18 +21,12 @@ public interface TaskTrackerConstants {
     String USER_ALREADY_EXISTS_MESSAGE = "User already exists!";
     String USER_DOES_NOT_EXIST_MESSAGE = "User does not exist!";
     String INVALID_PASSWORD_MESSAGE = "Password is invalid!";
-    String USER_SIGNED_UP_SUCCESSFULLY = "User Registered Successfully";
     String TOKEN_INVALID = "Invalid authorization header!";
     String TOKEN_EXPIRED = "User token expired!";
     String AUTHENTICATION_REQUIRED = "User needs to be authenticated!";
     String UNIDENTIFIED_DEVICE = "User device is not recognizable!";
-    String AUTH_HEADER = "Authorization";
-    String UNIDENTIFIED_OPERATION = "Unidentified operation";
     String CACHE_USER_DETAILS = "#usd";
-    String CACHE_FORGOT_PASSWORD = "#fp";
     String CACHE_TASK_DETAILS = "#td";
     String CACHE_DEVICE_DETAILS = "#udd";
-    String TWO_FACTOR_OTP_CACHE = "#tfoc";
-    String NEW_DEVICE_LOGIN_MAIL_SUBJECT = "Your account was logged in with a new device!";
-    String VALIDATE_SIGN_UP_MAIL_SUBJECT = "Validate your sign up with OTP";
+    String TASKTRACKER_SERVICE_NAME = "task-tracker";
 }
