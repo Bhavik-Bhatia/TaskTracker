@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+//TODO 6: Improve your HTTP Methods like POST, GET, DELETE, PUT. Use them properly as per their standards. Return URI in POST if a new resource is created.
 @RestController
 @RequestMapping(TaskTrackerURI.TASK_URI)
 @CrossOrigin("*")

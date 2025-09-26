@@ -1,6 +1,6 @@
 
 dependencies {
-    api 'org.typesense:typesense-java:0.8.1'
-    api 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+    api "org.typesense:typesense-java:$typeSenseVersion"
+    api "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
     api 'org.springframework.boot:spring-boot-starter-web'
 }

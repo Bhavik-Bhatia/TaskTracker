@@ -13,6 +13,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
+
+//TODO 7: Use AOP and make annotations for Logging, Exception Handling, Security etc. Do not repeat code.
 @SpringBootApplication
 @EnableConfigurationProperties
 @EnableFeignClients

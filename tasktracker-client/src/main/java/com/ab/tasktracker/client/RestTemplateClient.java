@@ -7,6 +7,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+//TODO 6) Can you lessen the logic here of Rest Template Client Using Request Entity or other methods make it more memorable.
+// Make a better Rest Template Bean which supports HTTP Connection Pooling.
 public class RestTemplateClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
