@@ -2,8 +2,6 @@ rootProject.name = 'tasktracker'
 include 'tasktracker-web'
 include 'tasktracker-dao'
 include 'tasktracker-core'
-include 'tasktracker-graph'
-include 'tasktracker-solr'
 include 'tasktracker-client'
 include 'tasktracker-typesense'
 

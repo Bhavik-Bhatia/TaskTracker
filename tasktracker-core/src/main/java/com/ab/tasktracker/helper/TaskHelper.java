@@ -1,13 +1,14 @@
 package com.ab.tasktracker.helper;
 
+import com.ab.cache_service.service.CacheService;
 import com.ab.tasktracker.entity.Task;
 import com.ab.tasktracker.repository.TaskRepository;
-import com.ab.tasktracker.service.CacheService;
 import com.ab.tasktracker.service.GlobalHelper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +26,14 @@ import static com.ab.tasktracker.constants.TaskTrackerConstants.CACHE_TASK_DETAI
  * Helper class for Task Service
  */
 @Component
+@AllArgsConstructor
 public class TaskHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskHelper.class);
 
-    @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
     private CacheService cacheService;
 
-    @Autowired
     private GlobalHelper globalHelper;
 
     /**

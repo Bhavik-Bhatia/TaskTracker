@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "tasktracker_service.task_tx_tbl")
+@Table(name = "tasktracker_service_task_tx_tbl")
 @Getter
 @Setter
 @ToString

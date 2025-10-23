@@ -28,12 +28,19 @@ import javax.sql.DataSource;
 public class TaskTrackerDataSource {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskTrackerDataSource.class);
 
-    @Autowired
     private TaskTrackerDataSourceProperties taskTrackerDataSourceProperties;
+
+    private JPAProperties jpaProperties;
+
     @Autowired
-    private JPAProperties JPAProperties;
+    public TaskTrackerDataSource(TaskTrackerDataSourceProperties dataSourceProperties,JPAProperties properties){
+        jpaProperties = properties;
+        taskTrackerDataSourceProperties = dataSourceProperties;
+    }
+
     @Value("${current.database}")
     private String currentDatabase;
+
     @Autowired
     private Environment environment;
 
@@ -51,7 +58,7 @@ public class TaskTrackerDataSource {
     @Bean(name = {"entityManagerFactory"})
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource) {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        LocalContainerEntityManagerFactoryBean factory = builder.dataSource(dataSource).packages("com.ab.tasktracker.entity").persistenceUnit("tasktracker").properties(TaskTrackerDataSourceProperties.getJPAProperties(JPAProperties)).build();
+        LocalContainerEntityManagerFactoryBean factory = builder.dataSource(dataSource).packages("com.ab.tasktracker.entity").persistenceUnit("tasktracker").properties(taskTrackerDataSourceProperties.getJPAProperties(jpaProperties)).build();
         factory.setJpaVendorAdapter(vendorAdapter);
         LOGGER.debug("TaskTrackerDataSource.entityManagerFactory config");
         return factory;

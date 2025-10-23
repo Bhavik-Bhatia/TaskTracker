@@ -3,9 +3,10 @@ dependencies {
     api project(":tasktracker-client")
     api project(":tasktracker-typesense")
     api 'org.springframework.boot:spring-boot-starter-validation'
-    api 'io.jsonwebtoken:jjwt-api:0.12.3'
-    api 'io.jsonwebtoken:jjwt-impl:0.12.3'
-    api 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    api "io.jsonwebtoken:jjwt-api:$jjwtVersion"
+    api "io.jsonwebtoken:jjwt-impl:$jjwtVersion"
+    api "io.jsonwebtoken:jjwt-jackson:$jjwtVersion"
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     api files('src/lib/thirdPartyJars/Jwt-Util-1.0-fat.jar')
+    api files('src/lib/thirdPartyJars/cache-service-1.0-fat.jar')
 }

@@ -18,7 +18,7 @@ dependencies {
     api project(":tasktracker-dao")
     api project(":tasktracker-core")
     api project(":tasktracker-client")
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:' + springDocSwaggerVersion
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocSwaggerVersion"
     api 'org.springframework.boot:spring-boot-starter-web'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -30,8 +30,4 @@ test {
 
 tasks.named('bootBuildImage') {
     builder = 'paketobuildpacks/builder-jammy-base:latest'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }

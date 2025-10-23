@@ -1,47 +1,33 @@
 package com.ab.tasktracker.service;
 
-import com.ab.tasktracker.client.EmailClient;
 import com.ab.tasktracker.client.RestTemplateClient;
 import com.ab.tasktracker.constants.TaskTrackerConstants;
 import com.ab.tasktracker.dto.TaskDTO;
 import com.ab.tasktracker.entity.Task;
 import com.ab.tasktracker.entity.User;
 import com.ab.tasktracker.helper.TaskHelper;
-import com.ab.tasktracker.helper.UserHelper;
-import com.ab.tasktracker.repository.TaskRepository;
 import com.ab.tasktracker.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class TaskService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskService.class);
 
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private EmailClient emailClient;
-    @Autowired
-    private CacheService cacheService;
-    @Autowired
-    private UserHelper userHelper;
-    @Autowired
     private TaskHelper taskHelper;
-    @Autowired
-    private TypesenseService typesenseService;
 
+    private TypesenseService typesenseService;
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -62,7 +48,10 @@ public class TaskService {
      */
     public TaskDTO addTask(TaskDTO taskDTO) {
         LOGGER.debug("Enter in TaskService.addTask()");
-        User userEntity = null;
+        //TODO: Need to get email or UserID via token
+        Long userId = 1L;
+        //TODO: Need to user details from Auth Service or task service needs User entity also
+        User userEntity = new User();
         boolean isUpdate = false;
 
         LOGGER.debug("Performing Validation");
@@ -83,30 +72,19 @@ public class TaskService {
 
 //      Get user details by token and add in TaskDTO
         LOGGER.debug("Get User details by token");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            String email = authentication.getPrincipal().toString();
-            if (!email.isBlank()) {
-//              Get user details via cache
-                userEntity = userHelper.getUserDetails(email);
-//              If Task Id present task is being updated not inserted
-                if (taskDTO.getTaskId() != null && userEntity.getUserId() != null) {
-                    isUpdate = true;
+        if (userId != null) {
+//          If Task Id present task is being updated not inserted
+            if (taskDTO.getTaskId() != null) {
+                isUpdate = true;
 //                  Get details from Cache
-                    if (taskHelper.getTaskDetails(taskDTO.getTaskId(), userEntity.getUserId()) == null) {
-                        throw new RuntimeException(TaskTrackerConstants.TASK_NOT_EXISTS);
-                    }
+                if (taskHelper.getTaskDetails(taskDTO.getTaskId(), userId) == null) {
+                    throw new RuntimeException(TaskTrackerConstants.TASK_NOT_EXISTS);
                 }
-                if (userEntity != null) {
-                    taskDTO.setUserId(userEntity.getUserId());
-//                  Assignee feature will be added in the future
-                    if (taskDTO.getAssignee() == null) {
-                        taskDTO.setAssignee(userEntity.getUserId());
-                    }
-                } else {
-                    throw new RuntimeException(TaskTrackerConstants.USER_DOES_NOT_EXIST_MESSAGE);
-                }
-                LOGGER.debug("User details found");
+            }
+            taskDTO.setUserId(userId);
+//          Assignee feature will be added in the future
+            if (taskDTO.getAssignee() == null) {
+                taskDTO.setAssignee(userId);
             }
         } else {
             throw new RuntimeException(TaskTrackerConstants.AUTHENTICATION_REQUIRED);
@@ -149,51 +127,35 @@ public class TaskService {
      */
     public TaskDTO getTask(Long taskId) {
         LOGGER.debug("Get User details by token");
-//      Get user by context holder and get task from user and task ID
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            String email = authentication.getPrincipal().toString();
-            if (!email.isBlank()) {
-                User userEntity = userHelper.getUserDetails(email);
-                if (userEntity != null) {
-                    LOGGER.debug("User details found");
-//                  We get task details from cache/DB
-                    Task task = taskHelper.getTaskDetails(taskId, userEntity.getUserId());
-                    if (task != null) {
-                        return ModelMapperUtil.getTaskDTOFromTask(task);
-                    } else {
-                        throw new RuntimeException(TaskTrackerConstants.TASK_NOT_EXISTS);
-                    }
-                } else {
-                    throw new RuntimeException(TaskTrackerConstants.USER_DOES_NOT_EXIST_MESSAGE);
-                }
-
+        //TODO: Need to get email or UserID via token
+        Long userId = 1L;
+        if (userId != null) {
+            LOGGER.debug("User details found");
+//          We get task details from cache/DB
+            Task task = taskHelper.getTaskDetails(taskId, userId);
+            if (task != null) {
+                return ModelMapperUtil.getTaskDTOFromTask(task);
+            } else {
+                throw new RuntimeException(TaskTrackerConstants.TASK_NOT_EXISTS);
             }
+        } else {
+            //TODO: Change to User ID not found from token
+            throw new RuntimeException(TaskTrackerConstants.USER_DOES_NOT_EXIST_MESSAGE);
         }
-        throw new RuntimeException(TaskTrackerConstants.AUTHENTICATION_REQUIRED);
     }
 
     public List<Map<String, Object>> getAllTasks() throws Exception {
         LOGGER.debug("Get User details by token");
-//      Get user by context holder and get task from user and task ID
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            String email = authentication.getPrincipal().toString();
-            if (!email.isBlank()) {
-                User userEntity = userHelper.getUserDetails(email);
-                if (userEntity != null) {
-                    LOGGER.debug("User details found");
-//                  We get task details from Type Sense
-                    List<Map<String, Object>> mapList = typesenseService.getAllDocumentsData("task", userEntity.getUserId());
-                    if (!mapList.isEmpty()) {
-                        return mapList;
-                    } else {
-                        throw new RuntimeException(TaskTrackerConstants.TASK_NOT_EXISTS);
-                    }
-                } else {
-                    throw new RuntimeException(TaskTrackerConstants.USER_DOES_NOT_EXIST_MESSAGE);
-                }
-
+        //TODO: Need to get email or UserID via token
+        Long userId = 1L;
+        if (userId != null) {
+            LOGGER.debug("User details found");
+//          We get task details from Type Sense
+            List<Map<String, Object>> mapList = typesenseService.getAllDocumentsData("task", userId);
+            if (!mapList.isEmpty()) {
+                return mapList;
+            } else {
+                throw new RuntimeException(TaskTrackerConstants.TASK_NOT_EXISTS);
             }
         }
         throw new RuntimeException(TaskTrackerConstants.AUTHENTICATION_REQUIRED);
