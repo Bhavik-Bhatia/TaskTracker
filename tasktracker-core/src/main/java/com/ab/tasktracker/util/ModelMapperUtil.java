@@ -10,16 +10,17 @@ public class ModelMapperUtil {
     public static TaskDTO getTaskDTOFromTask(Task task) {
         TaskDTO taskDTO = new TaskDTO();
         BeanUtils.copyProperties(task, taskDTO);
-        taskDTO.setUserId(task.getUserId().getUserId());
-        taskDTO.setAssignee(task.getAssignee().getUserId());
+        taskDTO.setUserId(task.getUserId());
+        taskDTO.setAssignee(task.getAssignee());
         return taskDTO;
     }
 
     public static Task getTaskFromTaskDTO(TaskDTO taskDTO,User user) {
         Task task = new Task();
         BeanUtils.copyProperties(taskDTO, task);
-        task.setAssignee(user);
-        task.setUserId(user);
+//        No need to set user and assignee explicitly as they are copied by BeanUtils as updated from User to Long type
+//        task.setAssignee(user.getUserId());
+//        task.setUserId(user.getUserId());
         return task;
     }
 

@@ -1,10 +1,13 @@
 package com.ab.tasktracker.service;
 
+import com.ab.tasktracker.annotation.Log;
 import com.ab.tasktracker.client.RestTemplateClient;
 import com.ab.tasktracker.constants.TaskTrackerConstants;
 import com.ab.tasktracker.dto.TaskDTO;
 import com.ab.tasktracker.entity.Task;
 import com.ab.tasktracker.entity.User;
+import com.ab.tasktracker.exception.AppException;
+import com.ab.tasktracker.exception.ErrorCode;
 import com.ab.tasktracker.helper.TaskHelper;
 import com.ab.tasktracker.util.ModelMapperUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,9 +19,13 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.ab.tasktracker.exception.ErrorCode.AUTHENTICATION_REQUIRED;
+import static com.ab.tasktracker.exception.ErrorCode.USER_ID_REQUIRED;
 
 @Service
 @AllArgsConstructor
@@ -31,6 +38,7 @@ public class TaskService {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
+    @Log
     public void callML(String taskName, HttpServletRequest httpServletRequest) {
         LOGGER.debug("Call ML Service for initial category");
         RestTemplateClient client = new RestTemplateClient();
@@ -46,10 +54,9 @@ public class TaskService {
      * @param taskDTO TaskDTO from UI is persisted
      * @return TaskDTO
      */
-    public TaskDTO addTask(TaskDTO taskDTO) {
-        LOGGER.debug("Enter in TaskService.addTask()");
-        //TODO: Need to get email or UserID via token
-        Long userId = 1L;
+    @Log
+    public TaskDTO addTask(TaskDTO taskDTO,HttpServletRequest httpServletRequest) throws AppException {
+        Long userId = (Long) httpServletRequest.getAttribute("userId");
         //TODO: Need to user details from Auth Service or task service needs User entity also
         User userEntity = new User();
         boolean isUpdate = false;
@@ -71,14 +78,13 @@ public class TaskService {
         }
 
 //      Get user details by token and add in TaskDTO
-        LOGGER.debug("Get User details by token");
         if (userId != null) {
 //          If Task Id present task is being updated not inserted
             if (taskDTO.getTaskId() != null) {
                 isUpdate = true;
 //                  Get details from Cache
                 if (taskHelper.getTaskDetails(taskDTO.getTaskId(), userId) == null) {
-                    throw new RuntimeException(TaskTrackerConstants.TASK_NOT_EXISTS);
+                    throw new AppException(ErrorCode.TASK_NOT_FOUND, TaskTrackerConstants.TASK_NOT_EXISTS);
                 }
             }
             taskDTO.setUserId(userId);
@@ -87,7 +93,7 @@ public class TaskService {
                 taskDTO.setAssignee(userId);
             }
         } else {
-            throw new RuntimeException(TaskTrackerConstants.AUTHENTICATION_REQUIRED);
+            throw new AppException(USER_ID_REQUIRED, TaskTrackerConstants.USER_ID_REQUIRED_MESSAGE);
         }
 
         LOGGER.debug("Call ML Service for initial category");
@@ -99,7 +105,11 @@ public class TaskService {
 
 //      We save task in DB/Cache and Cache(Update/Insert)
         if (task != null) {
+//            try {
             taskHelper.insertTaskDetails(task);
+//            }catch (Exception e) {
+//                LOGGER.error("Error while inserting task details: {}", e.getMessage());
+//            }
 
             LOGGER.debug("Save task in TypeSense");
             Map<String, Object> taskMap;
@@ -114,7 +124,6 @@ public class TaskService {
                 LOGGER.error("Exception while inserting into TypeSense {}", e.getMessage());
             }
         }
-        LOGGER.debug("Exit in TaskService.addTask()");
         return ModelMapperUtil.getTaskDTOFromTask(task);
     }
 
@@ -125,10 +134,10 @@ public class TaskService {
      * @param taskId to get task details
      * @return TaskDTO task from userID and taskId
      */
-    public TaskDTO getTask(Long taskId) {
+    @Log
+    public TaskDTO getTask(Long taskId, HttpServletRequest httpServletRequest) throws AppException {
         LOGGER.debug("Get User details by token");
-        //TODO: Need to get email or UserID via token
-        Long userId = 1L;
+        Long userId = (Long) httpServletRequest.getAttribute("userId");
         if (userId != null) {
             LOGGER.debug("User details found");
 //          We get task details from cache/DB
@@ -136,18 +145,16 @@ public class TaskService {
             if (task != null) {
                 return ModelMapperUtil.getTaskDTOFromTask(task);
             } else {
-                throw new RuntimeException(TaskTrackerConstants.TASK_NOT_EXISTS);
+                throw new AppException(ErrorCode.TASK_NOT_FOUND, TaskTrackerConstants.TASK_NOT_EXISTS);
             }
         } else {
-            //TODO: Change to User ID not found from token
-            throw new RuntimeException(TaskTrackerConstants.USER_DOES_NOT_EXIST_MESSAGE);
+            throw new AppException(ErrorCode.USER_NOT_FOUND, TaskTrackerConstants.USER_DOES_NOT_EXIST_MESSAGE);
         }
     }
 
-    public List<Map<String, Object>> getAllTasks() throws Exception {
-        LOGGER.debug("Get User details by token");
-        //TODO: Need to get email or UserID via token
-        Long userId = 1L;
+    @Log
+    public List<Map<String, Object>> getAllTasks(HttpServletRequest httpServletRequest) throws Exception {
+        Long userId = (Long) httpServletRequest.getAttribute("userId");
         if (userId != null) {
             LOGGER.debug("User details found");
 //          We get task details from Type Sense
@@ -155,10 +162,10 @@ public class TaskService {
             if (!mapList.isEmpty()) {
                 return mapList;
             } else {
-                throw new RuntimeException(TaskTrackerConstants.TASK_NOT_EXISTS);
+                throw new AppException(ErrorCode.TASK_NOT_FOUND, TaskTrackerConstants.TASK_NOT_EXISTS);
             }
         }
-        throw new RuntimeException(TaskTrackerConstants.AUTHENTICATION_REQUIRED);
+        throw new AppException(AUTHENTICATION_REQUIRED, TaskTrackerConstants.AUTHENTICATION_REQUIRED);
     }
 
 }

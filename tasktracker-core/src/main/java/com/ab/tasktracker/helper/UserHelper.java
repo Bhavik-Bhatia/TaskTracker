@@ -1,3 +1,4 @@
+/*
 package com.ab.tasktracker.helper;
 
 import com.ab.cache_service.service.CacheService;
@@ -12,14 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.ab.tasktracker.constants.TaskTrackerConstants.*;
 
+*/
 /**
  * Helper class for User Service
- */
+ *//*
+
 @Component
 @AllArgsConstructor
 public class UserHelper {
@@ -32,13 +36,15 @@ public class UserHelper {
 
     private DeviceRepository deviceRepository;
 
-    /**
+    */
+/**
      * Todo : This will be used when UI support is provided
      * We check if DeviceId is present if not we throw exception. This method is useful for
      * excluded URIs
      *
      * @param httpServletRequest We get deviceHeader from request object
-     */
+     *//*
+
     public String validateDeviceHeader(HttpServletRequest httpServletRequest) {
         String deviceId = httpServletRequest.getHeader("deviceId");
         if (deviceId == null)
@@ -46,12 +52,14 @@ public class UserHelper {
         return deviceId;
     }
 
-    /**
+    */
+/**
      * Get user details from cache/DB
      *
      * @param email to get details with
      * @return
-     */
+     *//*
+
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public User getUserDetails(String email) {
         User userEntity = null;
@@ -72,12 +80,14 @@ public class UserHelper {
         return userEntity;
     }
 
-    /**
+    */
+/**
      * Get device details from cache/DB
      *
      * @param userId to get details with
      * @return
-     */
+     *//*
+
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public Device getDeviceDetails(Long userId, String deviceId) {
         Device deviceEntity = null;
@@ -98,3 +108,4 @@ public class UserHelper {
         return deviceEntity;
     }
 }
+*/

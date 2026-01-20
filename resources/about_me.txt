@@ -10,6 +10,9 @@ java -Xms512m -Xmx2g -Djava.locale.providers=COMPAT,CLDR -Djboss.server.home.dir
 ${JAVA_HOME}/bin/java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=7000,suspend=n -Djava.locale.providers=COMPAT -Djboss.server.home.dir="/home/asite/Documents/tasktracker" -jar tasktracker-web/build/libs/tasktracker-web.war --spring.config.location=resources/application.properties
 ${JAVA_HOME}/bin/java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=7001,suspend=n -Djava.locale.providers=COMPAT -Djboss.server.home.dir="/home/asite/Documents/tasktrackerV2" -jar tasktracker-web/build/libs/tasktracker-web.war --spring.config.location=resources/application.properties
 
+For windows
+%JAVA_HOME%\bin\java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=7002,suspend=n -Djava.locale.providers=COMPAT,CLDR -Djboss.server.home.dir="D:\TaskTracker" -jar tasktracker-web/build/libs/tasktracker-web.war --spring.config.location=resources/application.properties
+
 3)NgRok -
 ngrok http 8090
 

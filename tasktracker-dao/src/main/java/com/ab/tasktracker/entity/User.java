@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-@Entity
+//@Entity
 @Table(name = "tasktracker_service_user_ms_tbl")
 @Getter
 @Setter

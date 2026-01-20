@@ -1,7 +1,9 @@
 package com.ab.tasktracker.rest;
 
+import com.ab.tasktracker.annotation.Log;
 import com.ab.tasktracker.constants.TaskTrackerURI;
 import com.ab.tasktracker.dto.TaskDTO;
+import com.ab.tasktracker.exception.AppException;
 import com.ab.tasktracker.service.TaskService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,48 +30,43 @@ public class TaskResources {
     private TaskService taskService;
 
     /**
-     * This API inserts tasks in DB and Solr. Gets task category from ML service
-     * and saves it in DB and Solr as well.
+     * This API inserts tasks in DB and TypeSense. Gets task category from ML service
+     * and saves it in DB and Typesense as well.
      *
      * @return ResponseEntity
      */
     @PostMapping(value = TaskTrackerURI.ADD_TASK_URI, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TaskDTO> addTask(@Valid @NotNull @RequestBody TaskDTO taskDTO, HttpServletRequest httpServletRequest) {
-        LOGGER.debug("Enter in TaskResources.addTask()");
-        TaskDTO savedTask = taskService.addTask(taskDTO);
-        LOGGER.debug("Exit in TaskResources.addTask()");
+    @Log
+    public ResponseEntity<TaskDTO> addTask(@Valid @NotNull @RequestBody TaskDTO taskDTO, HttpServletRequest httpServletRequest) throws AppException {
+        TaskDTO savedTask = taskService.addTask(taskDTO,httpServletRequest);
         return ResponseEntity.status(HttpStatus.OK).body(savedTask);
     }
 
     @PostMapping(value = "callML/{taskName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Log
     public ResponseEntity<Boolean> callML(@Valid @NotNull @PathVariable String taskName, HttpServletRequest httpServletRequest) {
-        LOGGER.debug("Enter in TaskResources.callML()");
         taskService.callML(taskName, httpServletRequest);
-        LOGGER.debug("Exit in TaskResources.callML()");
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
 
     @PostMapping(value = TaskTrackerURI.GET_TASK_URI, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getTask(@NotNull @RequestParam Long taskId) {
-        LOGGER.debug("Enter in TaskResources.getTask()");
-        TaskDTO task = taskService.getTask(taskId);
-        LOGGER.debug("Exit in TaskResources.getTask()");
+    @Log
+    public ResponseEntity<Object> getTask(@NotNull @RequestParam Long taskId, HttpServletRequest httpServletRequest) throws AppException {
+        TaskDTO task = taskService.getTask(taskId, httpServletRequest);
         return ResponseEntity.status(HttpStatus.OK).body(task);
     }
 
     @PostMapping(value = TaskTrackerURI.GET_ALL_ME_TASK_URI, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<List<Map<String, Object>>> getAllMeTask() throws Exception {
-        LOGGER.debug("Enter in TaskResources.getTask()");
-        List<Map<String, Object>> allTasks = taskService.getAllTasks();
-        LOGGER.debug("Exit in TaskResources.getTask()");
+    @Log
+    public ResponseEntity<List<Map<String, Object>>> getAllMeTask(HttpServletRequest httpServletRequest) throws Exception {
+        List<Map<String, Object>> allTasks = taskService.getAllTasks(httpServletRequest);
         return ResponseEntity.status(HttpStatus.OK).body(allTasks);
     }
 
     @PostMapping(value = TaskTrackerURI.REMOVE_TASK_URI, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Log
     public ResponseEntity<Object> removeTask() {
-        LOGGER.debug("Enter in TaskResources.removeTask()");
-        LOGGER.debug("Exit in TaskResources.removeTask()");
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 

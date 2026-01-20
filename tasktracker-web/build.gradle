@@ -21,7 +21,6 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocSwaggerVersion"
     api 'org.springframework.boot:spring-boot-starter-web'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 test {

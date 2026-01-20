@@ -1,7 +1,11 @@
 package com.ab.tasktracker.helper;
 
 import com.ab.cache_service.service.CacheService;
+import com.ab.tasktracker.actuator.metric.TaskTrackerMetrics;
+import com.ab.tasktracker.annotation.Log;
 import com.ab.tasktracker.entity.Task;
+import com.ab.tasktracker.exception.AppException;
+import com.ab.tasktracker.exception.ErrorCode;
 import com.ab.tasktracker.repository.TaskRepository;
 import com.ab.tasktracker.service.GlobalHelper;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -13,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,23 +41,23 @@ public class TaskHelper {
 
     private GlobalHelper globalHelper;
 
+    private TaskTrackerMetrics taskTrackerMetrics;
+
     /**
      * Insert task details into DB and Cache
      *
      * @param task to get details with
      * @return Task
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Log
     public Task insertTaskDetails(Task task) {
         Task taskEntity = null;
-        try {
-            taskEntity = taskRepository.save(task);
-            Map<String, Object> map = new HashMap<>();
-            map.put(taskEntity.getTaskId() + CACHE_TASK_DETAILS, taskEntity);
-            cacheService.cacheOps(map, CacheService.CacheOperation.INSERT);
-        } catch (Exception e) {
-            LOGGER.error("Error while inserting user details: {}", e.getMessage());
-        }
+        taskEntity = taskRepository.save(task);
+        taskTrackerMetrics.taskInsertCounterIncrement();
+        Map<String, Object> map = new HashMap<>();
+        map.put(taskEntity.getTaskId() + CACHE_TASK_DETAILS, taskEntity);
+        cacheService.cacheOps(map, CacheService.CacheOperation.INSERT);
         return taskEntity;
     }
 
@@ -64,6 +69,7 @@ public class TaskHelper {
      * @return Task
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    @Log
     public Task getTaskDetails(Long taskId, Long userId) {
         Task taskEntity = null;
         try {
@@ -91,15 +97,16 @@ public class TaskHelper {
      * @param taskCompleteDate
      * @return
      */
-    public boolean validateTaskDateTime(ZonedDateTime taskStartDate, ZonedDateTime taskDueDate, ZonedDateTime taskCompleteDate) {
+    @Log
+    public boolean validateTaskDateTime(ZonedDateTime taskStartDate, ZonedDateTime taskDueDate, ZonedDateTime taskCompleteDate) throws AppException {
 //      First we compare Start Date and Due Date
         if (taskStartDate != null && taskDueDate != null) {
             if (globalHelper.compareDate(taskStartDate, taskDueDate))
-                throw new RuntimeException("Due date is larger than Start Date");
+                throw new AppException(ErrorCode.DATE_EXCEPTION, "Due date is larger than Start Date");
 //          Then we compare Start Date and Completed Date
             if (taskCompleteDate != null) {
                 if (!globalHelper.compareDate(taskCompleteDate, taskStartDate)) {
-                    throw new RuntimeException("Completion date is larger than Start Date");
+                    throw new AppException(ErrorCode.DATE_EXCEPTION, "Completion date is larger than Start Date");
                 }
             }
         }
@@ -112,10 +119,11 @@ public class TaskHelper {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         Map<String, Object> taskMap = mapper.convertValue(task, new TypeReference<Map<String, Object>>() {
         });
-        Map assigneeUserMap = (Map) taskMap.get("assignee");
-        Map userIdUserMap = (Map) taskMap.get("userId");
-        taskMap.put("assignee", assigneeUserMap.get("userId").toString());
-        taskMap.put("userId", userIdUserMap.get("userId").toString());
+//      Updating usage of assignee and userId from Map to their Long values as we removed foreign key relationship
+//        Map assigneeUserMap = (Map) taskMap.get("assignee");
+//        Map userIdUserMap = (Map) taskMap.get("userId");
+        taskMap.put("assignee", taskMap.get("assignee").toString());
+        taskMap.put("userId", taskMap.get("userId").toString());
         taskMap.put("parentTaskId", taskMap.get("parentTaskId").toString());
         taskMap.put("taskId", taskMap.get("taskId").toString());
         return taskMap;

@@ -7,6 +7,7 @@ public interface TaskTrackerConstants {
     String DEVICE_ID_REQUIRED_MESSAGE = "Device identifier is required!";
     String PASSWORD_VALIDATION_MESSAGE = "Password must be between 8 and 20 characters long";
     String USERNAME_REQUIRED_MESSAGE = "Username is required!";
+    String USER_ID_REQUIRED_MESSAGE = "User ID not found in token";
     String TASK_NAME_REQUIRED_MESSAGE = "Task name is required!";
     String TASK_STATUS_NAME_REQUIRED_MESSAGE = "Task status name is required!";
     String PARENT_TASK_NAME_REQUIRED_MESSAGE = "Parent task id is required!";

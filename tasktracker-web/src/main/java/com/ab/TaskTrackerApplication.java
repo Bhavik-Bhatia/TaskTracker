@@ -13,6 +13,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.Arrays;
+
 
 //TODO 7: Use AOP and make annotations for Logging, Exception Handling, Security etc. Do not repeat code.
 @SpringBootApplication
@@ -25,8 +27,8 @@ public class TaskTrackerApplication {
 
 
     public static void main(String[] args) throws Exception {
-        ConfigurableApplicationContext context = SpringApplication.run(TaskTrackerApplication.class, args);
-        TypesenseConfig typesenseConfig = context.getBean(TypesenseConfig.class);
+        ConfigurableApplicationContext ctx = SpringApplication.run(TaskTrackerApplication.class, args);
+        TypesenseConfig typesenseConfig = ctx.getBean(TypesenseConfig.class);
         typesenseConfig.getTypeSenseClient();
         LOGGER.info("Typesense Bean: {}", typesenseConfig);
     }

@@ -24,7 +24,15 @@ redis-cli --cluster create 127.0.0.1:6378 127.0.0.1:6380 127.0.0.1:6381 --cluste
 1.6)Check cluster nodes
 redis-cli -p 6380 cluster nodes
 
+
+
+
 redis-cli -p <port>
 
 >> flushall
 >> cluster reset
+
+1.7)docker redis reset and flush commands
+
+docker exec -it redis-node-01 redis-cli FLUSHALL
+docker exec -it redis-node-01 redis-cli cluster reset hard

@@ -13,6 +13,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query(value = "select * from tasktracker_service_task_tx_tbl where task_id =?1 AND created_user_id=?2", nativeQuery = true)
     Task findByIdAndUserId(Long taskId, Long userId);
+
     @EntityGraph(value = "Task.user", type = EntityGraph.EntityGraphType.LOAD)
     List<Task> findAll();
+
+    @Query(value = "select count(*) from tasktracker_service_task_tx_tbl", nativeQuery = true)
+    int countTasks();
+
 }

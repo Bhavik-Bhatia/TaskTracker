@@ -21,10 +21,12 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Component
+/*
 @NamedEntityGraph(
         name = "Task.user",
         attributeNodes = {@NamedAttributeNode("userId"), @NamedAttributeNode("assignee")}
 )
+*/
 public class Task implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -50,13 +52,15 @@ public class Task implements Serializable {
     @Column(name = "updated_category")
     private String updatedCategory;
 
-    @ManyToOne
-    @JoinColumn(name = "assignee_user_id")
-    private User assignee;
+//  @ManyToOne
+    @Column(name = "assignee_user_id")
+//  @JoinColumn(name = "assignee_user_id")
+    private Long assignee;
 
-    @ManyToOne
-    @JoinColumn(name = "created_user_id")
-    private User userId;
+//   @ManyToOne
+//  @JoinColumn(name = "created_user_id")
+    @Column(name = "created_user_id")
+    private Long userId;
 
     @Column(name = "parent_task_id")
     private Long parentTaskId;

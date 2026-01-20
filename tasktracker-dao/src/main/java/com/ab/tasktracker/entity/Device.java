@@ -9,7 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-@Entity
+//@Entity
 @Table(name = "tasktracker_service_device_ms_tbl")
 @Getter
 @Setter
